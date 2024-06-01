@@ -72,7 +72,6 @@
     html_logo_url = "https://raw.githubusercontent.com/tarcieri/micromath/main/img/micromath-sq.png",
     html_root_url = "https://docs.rs/micromath/2.0.0"
 )]
-#![forbid(unsafe_code)]
 #![warn(
     missing_docs,
     rust_2018_idioms,
@@ -80,6 +79,7 @@
     trivial_numeric_casts,
     unused_qualifications
 )]
+#![feature(asm_experimental_arch)]
 
 #[cfg(feature = "statistics")]
 #[cfg_attr(docsrs, doc(cfg(feature = "statistics")))]

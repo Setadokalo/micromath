@@ -113,8 +113,16 @@ pub trait F32Ext: Sized {
 
 impl F32Ext for f32 {
     #[inline]
-    fn abs(self) -> f32 {
-        F32(self).abs().0
+    fn abs(self) -> Self {
+        let mut o: f32;
+        unsafe {
+            core::arch::asm!(
+                "fabs {o}, {f}",
+                f = in(freg) self,
+                o = out(freg) o,
+            );
+        }
+        o
     }
 
     #[inline]
@@ -177,9 +185,23 @@ impl F32Ext for f32 {
         F32(self).floor().0
     }
 
-    #[inline]
-    fn fract(self) -> f32 {
+    #[inline(always)]
+    fn fract(self) -> Self {
         F32(self).fract().0
+    }
+
+    #[inline(always)]
+    fn sqrt(self) -> Self {
+        let mut o: f32;
+        unsafe {
+            core::arch::asm!(
+                "frsqrte {o}, {f}",
+                "fres {o}, {o}",
+                f = in(freg) self,
+                o = out(freg) o,
+            );
+        }
+        o
     }
 
     #[inline]
@@ -260,11 +282,6 @@ impl F32Ext for f32 {
     #[inline]
     fn sin_cos(self) -> (f32, f32) {
         (F32(self).sin().0, F32(self).cos().0)
-    }
-
-    #[inline]
-    fn sqrt(self) -> f32 {
-        F32(self).sqrt().0
     }
 
     #[inline]
